@@ -22,11 +22,8 @@ LOCAL_PATH := device/samsung/i9300
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
-# This device is xhdpi.  However the platform doesn't
-# currently contain all of the bitmaps at xhdpi density so
-# we do this little trick to fall back to the hdpi version
-# if the xhdpi doesn't exist.
-PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
+# Screen density
+PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 # Init files
@@ -38,17 +35,14 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/tiny_hw.xml:system/etc/sound/m0
 
-# Camera
-PRODUCT_PACKAGES += \
-    camera.smdk4x12
-
 # Sensors
 PRODUCT_PACKAGES += \
     sensors.smdk4x12
 
 # Gps
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps.xml:system/etc/gps.xml
+    $(LOCAL_PATH)/configs/gps.xml:system/etc/gps.xml \
+    $(LOCAL_PATH)/gps_daemon.sh:system/bin/gps_daemon.sh
 
 # Product specific Packages
 PRODUCT_PACKAGES += \
@@ -57,6 +51,11 @@ PRODUCT_PACKAGES += \
     SamsungServiceMode \
     tinyplay
 
+# RIL
+PRODUCT_PACKAGES += \
+	libsamsung_symbols \
+	ril-wrapper
+
 # NFC
 PRODUCT_PACKAGES += \
 	nfc.exynos4 \
@@ -64,6 +63,11 @@ PRODUCT_PACKAGES += \
     libnfc_jni \
     Nfc \
     Tag
+
+# Camera
+PRODUCT_PACKAGES += \
+    camera.smdk4x12 \
+    Snap
 
 PRODUCT_COPY_FILES += \
     packages/apps/Nfc/migrate_nfc.txt:system/etc/updatecmds/migrate_nfc.txt \
@@ -88,7 +92,6 @@ $(call inherit-product, vendor/cm/config/nfc_enhanced.mk)
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.ril_class=SamsungExynos4RIL \
-    mobiledata.interfaces=pdp0,wlan0,gprs,ppp0 \
     ro.telephony.call_ring.multiple=false \
     ro.telephony.call_ring.delay=3000
 
